@@ -1,124 +1,64 @@
-Kubernetes Cluster Simulator
-Final Year Project – University of Westminster
+# Kubernetes Cluster Simulator
 
-Project Title
+## Project Title
 Designing and Implementing a Simulation of a Kubernetes Cluster to Visualise and Analyse Key Orchestration Concepts
 
-Overview
-This project is an interactive educational simulator that models the internal behaviour of a Kubernetes cluster.
-Instead of requiring access to a live cloud infrastructure, the system provides a controlled, visual simulation environment where users can observe and analyse:
-* Pod scheduling decisions
-* Resource allocation
-* Autoscaling behaviour
-* Node failures and recovery
-* Cluster performance metrics
-The simulator is designed to support learning in distributed systems and cloud computing.
+---
 
-Objectives
-The primary objectives of this project are:
-* Simulate Kubernetes scheduling logic
-* Model autoscaling behaviour based on CPU utilisation
-* Demonstrate fault tolerance and recovery
-* Provide real-time cluster visualisation
-* Log orchestration events for analysis
+## Project Overview
 
-System Architecture
-The project follows a modular object-oriented design:
+This project presents an interactive simulation of a Kubernetes cluster developed using Python and Streamlit.  
+The simulator models core container orchestration behaviours such as scheduling, autoscaling, deployment management, and fault tolerance.  
 
-models.py       → Core entities (Pod, Node)
-scheduler.py    → Scheduling logic
-autoscaler.py   → Cluster autoscaling behaviour
-controller.py   → Failure detection and recovery
-engine.py       → Simulation loop controller
-logging.py      → Event logging and metrics tracking
-app.py          → Streamlit UI interface
+The system provides a visual and educational representation of how Kubernetes components interact to manage workloads in a distributed system.
 
-This modular architecture ensures:
-* Maintainability
-* Extensibility
-* Clear separation of concerns
+Users can:
 
-Features Implemented
-Scheduler Simulation
-* Assigns Pods to Nodes
-* Respects CPU and memory constraints
-* Real-time placement visualisation
+- Create pods and deployments
+- Configure resource requirements
+- Submit workloads using templates
+- Deploy workloads from YAML configuration files
+- Simulate node and pod failures
+- Observe autoscaling behaviour
+- Monitor resource utilisation
+- Visualise cluster topology and events
 
-Autoscaler Simulation
-* Monitors average CPU utilisation
-* Adds new nodes when threshold is exceeded (e.g., >80%)
+The simulator is designed as both:
 
-Fault Injection
-* Manual Node failure injection
-* Controller-based recovery logic
-* Pod rescheduling to healthy nodes
+- an educational tool
+- a system analysis platform
+- a distributed systems demonstration
 
-Real-Time Visualisation
-* Cluster topology display
-* Pods nested inside Nodes
-* Colour-coded status indicators
+---
 
-Logging & Metrics
-* Scheduling decisions logged
-* Autoscaling events recorded
-* Failure and recovery events tracked
-* Export capability for further analysis
+## Key Features
 
-Technologies Used
-* Python 3
-* Streamlit (UI)
-* Object-Oriented Programming
-* Simulation modelling
-* CSV logging for metrics export
+### Workload Creation Template
 
-How to Run the Project
+Users can create workloads using an interactive form that allows configuration of:
 
-Clone the Repository
-git clone https://github.com/yourusername/k8s-simulator.git
-cd k8s-simulator
+- Workload type (Pod or Deployment)
+- CPU request
+- Memory request
+- Number of replicas
+- Workload name
 
-Create Virtual Environment
-python -m venv .venv
-source .venv/bin/activate  # Mac/Linux
+This template allows flexible workload creation similar to Kubernetes deployment configuration.
 
-Install Dependencies
-pip install -r requirements.txt
+---
 
-Run the Application
-PYTHONPATH=src streamlit run src/ui/app.py
+### YAML Deployment Support
 
-The simulator will open in your browser.
+The simulator allows users to deploy workloads using YAML configuration files.
 
-Demonstration Capabilities
-The simulator allows users to:
-1. Create Pods with configurable CPU & memory requirements
-2. Advance the simulation using Tick
-3. Observe scheduling decisions
-4. Increase workload to trigger autoscaling
-5. Manually inject Node failures
-6. Observe controller-driven recovery
+Example:
 
-Example Use Case
-* Create multiple pods
-* Increase CPU demand
-* Observe autoscaler create new nodes
-* Inject a node crash
-* Watch pods reschedule automatically
-This demonstrates Kubernetes-style self-healing behaviour.
-
-Academic Context
-This project was developed as part of a Final Year BSc Computer Science at the University of Westminster.
-It addresses the pedagogical gap in teaching Kubernetes orchestration by providing an interactive simulation tool rather than relying on live clusters.
-
-Future Improvements
-* Improved dashboard visualisation
-* Advanced scheduling algorithms (e.g., bin-packing)
-* Config save/load via JSON
-* More detailed performance analytics
-* Deployment scenario simulation
-
-Author
-Ezgi Damla Asli
-BSc Computer Science
-University of Westminster
-Supervisor: Hamed Hamzeh
+```yaml
+kind: Deployment
+metadata:
+  name: web-app
+spec:
+  replicas: 3
+  resources:
+    cpu: 2
+    memory: 2
