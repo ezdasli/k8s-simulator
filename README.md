@@ -62,3 +62,79 @@ spec:
   resources:
     cpu: 2
     memory: 2
+```
+
+### Scheduling Algorithms
+
+The simulator supports multiple scheduling strategies:
+
+- Round Robin Scheduling
+- Bin Packing Scheduling
+
+These algorithms determine how pods are assigned to nodes based on available resources.
+
+---
+
+### Autoscaling
+
+The autoscaler monitors CPU utilisation across nodes and automatically adds new nodes when utilisation exceeds a defined threshold.
+
+This simulates:
+
+Horizontal scaling in Kubernetes clusters.
+
+---
+
+### Fault Injection
+
+Users can simulate system failures including:
+
+- Node crash
+- Pod failure
+
+The system demonstrates:
+
+Self-healing behaviour through deployment reconciliation.
+
+When a pod fails, the controller automatically creates a replacement pod to maintain the desired number of replicas.
+
+---
+
+### Cluster Topology Visualisation
+
+The simulator displays a visual representation of the cluster showing:
+
+- Nodes
+- Running pods
+- Resource usage
+- Pod ownership
+- Node status
+
+This allows users to observe workload distribution across the cluster.
+
+---
+
+### Resource Utilisation Monitoring
+
+The system provides graphical visualisation of resource consumption including:
+
+- CPU utilisation
+- Memory utilisation
+- Resource usage over time
+
+These diagrams help analyse system performance and cluster behaviour.
+
+---
+
+### Event Logging
+
+All system events are recorded and displayed, including:
+
+- Pod creation
+- Deployment creation
+- Scheduling decisions
+- Node scaling
+- Pod failures
+- Recovery actions
+
+Logs can be exported as a CSV file for further analysis.
