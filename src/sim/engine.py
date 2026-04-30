@@ -27,6 +27,7 @@ class SimulationEngine:
 
         self.nodes: List[Node] = []
         self.pods: List[Pod] = []
+        self.deployments = {}
         self._node_counter = itertools.count(1)
         self._pod_counter = itertools.count(1)
 
@@ -41,13 +42,90 @@ class SimulationEngine:
         self.logger.log("scale_out", node_id=node.node_id)
         return node
 
-    def add_pod(self, cpu_req: int, mem_req: int) -> Pod:
-        pod = Pod(pod_id=f"pod-{next(self._pod_counter)}", cpu_req=cpu_req, mem_req=mem_req)
+    def add_pod(self, cpu_req: int, mem_req: int,pod_id: str | None = None) -> Pod:
+        if pod_id is None:
+            pod_id = f"pod-{next(self._pod_counter)}"
+
+        pod = Pod(
+            pod_id=pod_id,
+            cpu_req=cpu_req,
+            mem_req=mem_req,
+        )
+
         self.pods.append(pod)
         self.logger.log("pod_created", pod_id=pod.pod_id, cpu=cpu_req, mem=mem_req)
+
         return pod
+    
+    def create_deployment(
+        self,
+        name: str,
+        replicas: int,
+        cpu_req: int,
+        mem_req: int,
+    ) -> List[Pod]:
+        
+        self.deployments[name] = {
+            "replicas": replicas,
+            "cpu_req": cpu_req,
+            "mem_req": mem_req,
+        }
+
+        created_pods = []
+
+        for i in range(replicas):
+
+            pod_name = f"{name}-{i+1}"
+
+            pod = self.add_pod(cpu_req, mem_req, pod_id=pod_name)
+
+            # optional metadata (useful for UI later)
+            pod.owner_kind = "Deployment"
+            pod.owner_name = name
+
+            created_pods.append(pod)
+
+        # log event
+        self.logger.log(
+            "deployment_created",
+            pod_id=name,
+            cpu=cpu_req,
+            mem=mem_req,
+        )
+
+        return created_pods
+    
+    def reconcile_deployments(self) -> None:
+        for name, spec in self.deployments.items():
+            active_pods = [
+                p for p in self.pods
+                if getattr(p, "owner_name", None) == name
+                and p.status != PodStatus.FAILED
+            ]
+
+            missing = spec["replicas"] - len(active_pods)
+
+            for i in range(missing):
+                pod_name = f"{name}-recovered-{next(self._pod_counter)}"
+
+                pod = self.add_pod(
+                    cpu_req=spec["cpu_req"],
+                    mem_req=spec["mem_req"],
+                    pod_id=pod_name,
+                )
+
+                pod.owner_kind = "Deployment"
+                pod.owner_name = name
+
+                self.logger.log(
+                    "deployment_reconciled",
+                    pod_id=pod.pod_id,
+                    deployment=name,
+                )            
 
     def tick(self) -> None:
+        self.reconcile_deployments()
+
         # 1) Schedule pending pods
         for pod in [p for p in self.pods if p.status == PodStatus.PENDING]:
             node = self.scheduler.schedule(pod, self.nodes)
@@ -79,8 +157,6 @@ class SimulationEngine:
             if node:
                 node.pods = [p for p in node.pods if p.pod_id != pod_id]
         pod.status = PodStatus.FAILED
-        self.logger.log("pod_failed", pod_id=pod_id)
+        pod.node_id = None
 
-        # recovery: reschedule
-        self.controller.handle_pod_failure(pod)
         self.logger.log("pod_recovered_to_pending", pod_id=pod_id)
