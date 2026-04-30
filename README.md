@@ -37,7 +37,7 @@ To run the Kubernetes Cluster Simulator locally, follow these steps:
 
 1. Clone the GitHub repository:
 
-git clone https://github.com/your-username/k8s-simulator.git
+git clone https://github.com/ezdasli/k8s-simulator.git
 
 2. Navigate to the project directory:
 
