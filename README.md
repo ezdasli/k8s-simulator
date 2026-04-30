@@ -31,6 +31,35 @@ The simulator is designed as both:
 
 ---
 
+## Running the Kubernetes Cluster Simulator
+
+To run the Kubernetes Cluster Simulator locally, follow these steps:
+
+1. Clone the GitHub repository:
+
+git clone https://github.com/your-username/k8s-simulator.git
+
+2. Navigate to the project directory:
+
+cd k8s-simulator
+
+3. Create and activate a virtual environment:
+
+python3 -m venv .venv
+source .venv/bin/activate
+
+4. Install dependencies:
+
+pip install -r requirements.txt
+
+5. Set the Python path:
+
+export PYTHONPATH=src
+
+6. Run the application:
+
+streamlit run src/ui/app.py
+
 ## Key Features
 
 ### Workload Creation Template
